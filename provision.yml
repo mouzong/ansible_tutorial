@@ -41,6 +41,14 @@
       state: latest
     when: ansible_distribution == "CentOS"
 
+  - name: copy default html files to server
+    tags: apache,apache2,httpd
+    copy:
+      src: default_provision.html
+      dest: /var/www/html/index.html
+      owner: root
+      group: root
+      mode: 0644
 
 - hosts: db_servers
   become: true
