@@ -1,0 +1,45 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+
+  - name: install updates (CentOS)
+    tags: always
+    yum:
+      update_only: yes
+      update_cache: yes
+    when: ansible_distribution == "CentOS"
+
+  - name: install updates (Ubuntu)
+    tags: always
+    apt:
+      upgrade: dist
+      update_cache: yes
+    when: ansible_distribution == "Ubuntu"
+
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: Add user codegrill on al hosts
+    tags: always
+    user:
+      name: codegrill
+      groups: root
+
+  - name: add ssh keys for codegrill
+    tags: always
+    authorized_key:
+      user: codegrill
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILD/mOVz+klCiseRILOMcg1xMdEkZKYvA1RKPGGoshXp ansible"
+
+  - name: add sudoers for codegrill user
+    copy:
+      src: sudoer_codegrill
+      dest: /etc/sudoers.d/codegrill
+      owner: root
+      group: root
+      mode: 0440
+
