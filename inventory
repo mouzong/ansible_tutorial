@@ -1,8 +1,10 @@
-[centos]
-192.168.56.10 apache_package=httpd php_package=php
-192.168.56.11 apache_package=httpd php_package=php
-192.168.56.12 apache_package=httpd php_package=php
-192.168.56.13 apache_package=httpd php_package=php
+[file_servers]
+192.168.56.10
 
-[debian]
-192.168.56.7 apache_package=apache2 php_package=libapache2-mod-php
+[db_servers] 
+192.168.56.11
+
+[web_servers] 
+192.168.56.12 
+192.168.56.13 
+192.168.56.7
