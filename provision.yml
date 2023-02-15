@@ -18,120 +18,31 @@
     changed_when: false
     when: ansible_distribution == "Ubuntu"
 
-
 - hosts: all
   become: true
-  tasks:
+  roles:
+    - base
 
-  - name: add ssh keys for codegrill
-    tags: always
-    authorized_key:
-      user: codegrill
-      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILD/mOVz+klCiseRILOMcg1xMdEkZKYvA1RKPGGoshXp ansible"
-
-
-- hosts: work_station
+- hosts: workstations
   become: true
-  tasks:
-
-  - name: install unzip
-    package: 
-      name: unzip
-
-  - name: install terraform
-    unarchive: 
-      src: https://releases.hashicorp.com/terraform/1.3.8/terraform_1.3.8_linux_amd64.zip
-      dest: /usr/local/bin
-      remote_src: yes
-      mode: 0755
-      owner: root
-      group: root
-
+  roles:
+    - workstations
 
 - hosts: web_servers
   become: true
-  tasks:
-
-  - name: install apache and php packages for Ubuntu servers
-    tags: apache,apache2,ubuntu
-    apt:
-      name: 
-        - apache2
-        - libapache2-mod-php
-      state: latest
-    when: ansible_distribution == "Ubuntu"
-
-  - name: install apache and ph for CentOS servers
-    tags: apache,centos,httpd
-    yum:
-      name:
-        - httpd
-        - php
-      state: latest
-    when: ansible_distribution == "CentOS"
-  
-
-  - name: start httpd (CentOS)
-    tags: apache,centos,httpd
-    service:
-      name: httpd
-      state: started
-      enabled: yes
-    when: ansible_distribution == "CentOS"
-
-  - name: change email address for admin
-    tags: apache,centos,httpd
-    lineinfile:
-      path: /etc/httpd/conf/httpd.conf
-      regexp: '^ServerAdmin'
-      line: ServerAdmin admin@codegrill.tech
-    when: ansible_distribution == "CentOS"
-    register: httpd
-
-
-  - name: restart httpd (CentOS)
-    tags: apache,centos,httpd
-    service:
-      name: httpd
-      state: restarted
-    when: httpd.changed
-
-  - name: copy default html files to server
-    tags: apache,apache2,httpd
-    copy:
-      src: default_provision.html
-      dest: /var/www/html/index.html
-      owner: root
-      group: root
-      mode: 0644
+  roles: 
+    - web_servers
 
 - hosts: db_servers
   become: true
-  tasks:
-
-  - name: install mariadb package (CentOS)
-    tags: mariadb,centos,db
-    yum:
-      name: mariadb
-      state: latest
-    when: ansible_distribution == "CentOS"
-
-  - name: install mariadb package (Ubuntu)
-    tags: mariadb,db,ubuntu 
-    apt:
-      name: mariadb-server
-      state: latest
-    when: ansible_distribution == "Ubuntu"
-
+  roles:
+    - db_servers
 
 - hosts: file_servers
+  roles:
+    - file_servers
+
+- hosts: work_stations
   become: true
   tasks:
-
-  - name: install samba package
-    tags: samba
-    package:
-      name: samba
-      state: latest
-
 

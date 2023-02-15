@@ -1,0 +1,5 @@
+- name: add ssh keys for codegrill
+  tags: always
+  authorized_key:
+    user: codegrill
+    key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILD/mOVz+klCiseRILOMcg1xMdEkZKYvA1RKPGGoshXp ansible"

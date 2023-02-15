@@ -7,6 +7,6 @@
 [web_servers] 
 192.168.56.12 
 
-[work_station]
+[workstations]
 192.168.56.13 
 192.168.56.7

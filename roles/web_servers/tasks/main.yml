@@ -1,0 +1,43 @@
+- name: install apache and php packages for Ubuntu servers
+  tags: apache,apache2,ubuntu
+  apt:
+    name: 
+      - apache2
+      - libapache2-mod-php
+    state: latest
+  when: ansible_distribution == "Ubuntu"
+
+- name: install apache and ph for CentOS servers
+  tags: apache,centos,httpd
+  yum:
+    name:
+      - httpd
+      - php
+    state: latest
+  when: ansible_distribution == "CentOS"
+  
+- name: start httpd (CentOS)
+  tags: apache,centos,httpd
+  service:
+    name: httpd
+    state: started
+    enabled: yes 
+  when: ansible_distribution == "CentOS"
+
+- name: change email address for admin
+  tags: apache,centos,httpd
+  lineinfile:
+    path: /etc/httpd/conf/httpd.conf
+    regexp: '^ServerAdmin'
+    line: ServerAdmin admin@codegrill.com
+  when: ansible_distribution == "CentOS"
+  notify: restart_apache
+
+- name: copy default html files to server
+  tags: apache,apache2,httpd
+  copy:
+    src: default_provision.html
+    dest: /var/www/html/index.html
+    owner: root
+    group: root
+    mode: 0644
