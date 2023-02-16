@@ -42,7 +42,7 @@
   roles:
     - file_servers
 
-- hosts: work_stations
+- hosts: workstations
   become: true
   tasks:
 
